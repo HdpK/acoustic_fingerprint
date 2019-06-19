@@ -78,9 +78,8 @@ void setup()
   delay(100);
   fps.Open();         //send serial command to initialize fps
   fps.SetLED(true);   //turn on LED so fps can see fingerprint
-
+  
   check();
-
   Enroll();          //begin enrolling fingerprint
 }
 
@@ -118,12 +117,13 @@ void check()
     }
     delay(100);
   }
+  Enroll();
 }
 
 void Enroll()
 {
   // Enroll test
-
+  Serial.println("TEST_MAKE2");
   // find open enroll id
   int enrollid = 0;
   bool usedid = true;
