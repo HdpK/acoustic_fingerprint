@@ -54,6 +54,11 @@
 #include "FPS_GT511C3.h"
 #include "SoftwareSerial.h"
 
+const int green = 8;
+const int red1  = 9;
+const int red2 = 10;
+const int red3 = 11;
+
 // set up software serial pins for Arduino's w/ Atmega328P's
 // FPS (TX) is connected to pin 4 (Arduino's Software RX)
 // FPS (RX) is connected through a converter to pin 5 (Arduino's Software TX)
@@ -78,8 +83,13 @@ void setup()
   delay(100);
   fps.Open();         //send serial command to initialize fps
   fps.SetLED(true);   //turn on LED so fps can see fingerprint
+  pinMode(green, OUTPUT);
+  pinMode(red1, OUTPUT);
+  pinMode(red2, OUTPUT);
+  pinMode(red3, OUTPUT);
   
   check();
+
   Enroll();          //begin enrolling fingerprint
 }
 
@@ -102,28 +112,64 @@ void check()
         model you are using */
       if (id < 200) //<- change id value depending model you are using
       { //if the fingerprint matches, provide the matching template ID
-        Serial.print("Verified_ID ");
+        Serial.print("Verified_ID:");
         Serial.println(id);
+          digitalWrite(red1, HIGH);   
+          delay(500);                       
+          digitalWrite(red1, LOW);    
+          delay(500); 
+          digitalWrite(red2, HIGH);   
+          delay(500);                       
+          digitalWrite(red2, LOW);    
+          delay(500);
+          digitalWrite(red3, HIGH);   
+          delay(500);                       
+          digitalWrite(red3, LOW);    
+          delay(500);
+          digitalWrite(green, HIGH);   
+          delay(1000);                       
+          digitalWrite(green, LOW);    
+          delay(100);
       }
       else
       { //if unable to recognize
         Serial.println("Finger not found");
         testFingerprint = false;
+          digitalWrite(red1, HIGH);
+          digitalWrite(red2, HIGH);   
+          digitalWrite(red3, HIGH);   
+          delay(500);
+          digitalWrite(red1, LOW);   
+          digitalWrite(red2, LOW);   
+          digitalWrite(red3, LOW);
+          delay(500);
+          digitalWrite(red1, HIGH);
+          digitalWrite(red2, HIGH);   
+          digitalWrite(red3, HIGH);   
+          delay(500);
+          digitalWrite(red1, LOW);   
+          digitalWrite(red2, LOW);   
+          digitalWrite(red3, LOW);
+          delay(500);
+        Enroll();
       }
     }
     else
     {
       Serial.println("Please press finger");
+        digitalWrite(green, HIGH);   
+        delay(1000);                       
+        digitalWrite(green, LOW);    
+        delay(1000);
     }
     delay(100);
   }
-  Enroll();
 }
 
 void Enroll()
 {
   // Enroll test
-  Serial.println("TEST_MAKE2");
+
   // find open enroll id
   int enrollid = 0;
   bool usedid = true;
@@ -136,6 +182,7 @@ void Enroll()
 
   // enroll
   Serial.print("Press finger to Enroll #");
+  digitalWrite(green, HIGH);
   Serial.println(enrollid);
   while (fps.IsPressFinger() == false) delay(100);
   bool bret = fps.CaptureFinger(true);
@@ -143,6 +190,14 @@ void Enroll()
   if (bret != false)
   {
     Serial.println("Remove finger");
+      digitalWrite(green, LOW);
+      digitalWrite(red1, HIGH);
+      digitalWrite(red2, HIGH);   
+      digitalWrite(red3, HIGH);   
+      delay(500);   
+      digitalWrite(red2, LOW);   
+      digitalWrite(red3, LOW);
+      digitalWrite(green, HIGH);
     fps.Enroll1();
     while (fps.IsPressFinger() == true) delay(100);
     Serial.println("Press same finger again");
@@ -151,6 +206,12 @@ void Enroll()
     if (bret != false)
     {
       Serial.println("Remove finger");
+        digitalWrite(green, LOW);
+        digitalWrite(red2, HIGH);   
+        digitalWrite(red3, HIGH);   
+        delay(500);      
+        digitalWrite(red3, LOW);
+        digitalWrite(green, HIGH);
       fps.Enroll2();
       while (fps.IsPressFinger() == true) delay(100);
       Serial.println("Press same finger yet again");
@@ -159,6 +220,12 @@ void Enroll()
       if (bret != false)
       {
         Serial.println("Remove finger");
+          digitalWrite(red3, HIGH);   
+          delay(500);   
+          digitalWrite(red1, LOW);
+          digitalWrite(red2, LOW);   
+          digitalWrite(red3, LOW);
+          digitalWrite(green, LOW);
         iret = fps.Enroll3();
         if (iret == 0)
         {
@@ -170,21 +237,85 @@ void Enroll()
         {
           Serial.print("Enrolling Failed with error code:");
           Serial.println(iret);
+            digitalWrite(red1, HIGH);
+            digitalWrite(red2, HIGH);   
+            digitalWrite(red3, HIGH);   
+            delay(500);
+            digitalWrite(red1, LOW);   
+            digitalWrite(red2, LOW);   
+            digitalWrite(red3, LOW);
+            delay(500);
+            digitalWrite(red1, HIGH);
+            digitalWrite(red2, HIGH);   
+            digitalWrite(red3, HIGH);   
+            delay(500);
+            digitalWrite(red1, LOW);   
+            digitalWrite(red2, LOW);   
+            digitalWrite(red3, LOW);
+            delay(500);
           check();
         }
       }
       else {
         Serial.println("Failed to capture third finger");
+          digitalWrite(red1, HIGH);
+          digitalWrite(red2, HIGH);   
+          digitalWrite(red3, HIGH);   
+          delay(500);
+          digitalWrite(red1, LOW);   
+          digitalWrite(red2, LOW);   
+          digitalWrite(red3, LOW);
+          delay(500);
+          digitalWrite(red1, HIGH);
+          digitalWrite(red2, HIGH);   
+          digitalWrite(red3, HIGH);   
+          delay(500);
+          digitalWrite(red1, LOW);   
+          digitalWrite(red2, LOW);   
+          digitalWrite(red3, LOW);
+          delay(500);
         Enroll();
       }
     }
     else {
       Serial.println("Failed to capture second finger");
+          digitalWrite(red1, HIGH);
+          digitalWrite(red2, HIGH);   
+          digitalWrite(red3, HIGH);   
+          delay(500);
+          digitalWrite(red1, LOW);   
+          digitalWrite(red2, LOW);   
+          digitalWrite(red3, LOW);
+          delay(500);
+          digitalWrite(red1, HIGH);
+          digitalWrite(red2, HIGH);   
+          digitalWrite(red3, HIGH);   
+          delay(500);
+          digitalWrite(red1, LOW);   
+          digitalWrite(red2, LOW);   
+          digitalWrite(red3, LOW);
+          delay(500);
       Enroll();
     }
   }
   else {
     Serial.println("Failed to capture first finger");
+          digitalWrite(red1, HIGH);
+          digitalWrite(red2, HIGH);   
+          digitalWrite(red3, HIGH);   
+          delay(500);
+          digitalWrite(red1, LOW);   
+          digitalWrite(red2, LOW);   
+          digitalWrite(red3, LOW);
+          delay(500);
+          digitalWrite(red1, HIGH);
+          digitalWrite(red2, HIGH);   
+          digitalWrite(red3, HIGH);   
+          delay(500);
+          digitalWrite(red1, LOW);   
+          digitalWrite(red2, LOW);   
+          digitalWrite(red3, LOW);
+          delay(500);
     Enroll();
   }
 }
